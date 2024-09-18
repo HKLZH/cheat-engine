@@ -1,0 +1,41 @@
+name: Android Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11' # or your required version
+
+      - name: Set up Android NDK
+        uses: android-actions/setup-ndk@v1
+        with:
+          ndk-version: '21.3.6528147' # specify your NDK version
+
+      - name: Build for Android
+        run: |
+          cd cheat-engine/CheatEngine/ceserver/jni
+          ndk-build
+
+      - name: Package APK
+        run: |
+          # Add your APK packaging command here, e.g., gradle assembleDebug
+          cd path/to/your/apk
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: ceserver-apk
+          path: path/to/your/apk/app/build/outputs/apk/debug/app-debug.apk
